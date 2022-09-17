@@ -10,5 +10,5 @@ inputs:
     description: 'how many reviews needed'
     default: 1
 runs:
-  using: 'node14'
+  using: 'node16'
   main: 'dist/index.js'
