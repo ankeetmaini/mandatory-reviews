@@ -59,7 +59,7 @@ function run() {
                 pull_number,
                 per_page: 100
             });
-            console.log(res);
+            console.log({ res });
             const reviews = res.data
                 .map(d => {
                 var _a;

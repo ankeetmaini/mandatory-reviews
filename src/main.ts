@@ -26,7 +26,7 @@ async function run(): Promise<void> {
         per_page: 100
       }
     )
-    console.log(res)
+    console.log({res})
     const reviews = res.data
       .map(d => {
         const login = d?.user?.login
