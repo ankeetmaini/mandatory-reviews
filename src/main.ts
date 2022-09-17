@@ -1,16 +1,40 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as github from '@actions/github'
+import {Octokit} from '@octokit/core'
+import * as All from '@octokit/types'
+
+type reviewsResponse =
+  All.Endpoints['GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews']['response']
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const usernames: string = core.getInput('usernames')
+    const group = usernames.split(',')
+    const count = Number(core.getInput('count'))
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const octokit = new Octokit()
+    const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/')
+    const pull_number = github.context.issue.number
+    const res: reviewsResponse = await octokit.request(
+      'GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews',
+      {
+        owner,
+        repo,
+        pull_number,
+        per_page: 100
+      }
+    )
+    const reviews = res.data
+      .map(d => {
+        const login = d?.user?.login
+        const state = d?.state
+        if (login && group.includes(login) && state === 'APPROVED') {
+          return login
+        }
+        return
+      })
+      .filter(Boolean)
+    if (reviews.length < count) core.setFailed('Mandatory review check failed')
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

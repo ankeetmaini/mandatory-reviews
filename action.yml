@@ -1,11 +1,14 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Mandatory reviews'
+description: 'Makes reviews mandatory from passed-in usernames'
+author: 'ankeetmaini'
 inputs:
-  milliseconds: # change this
+  usernames: # change this
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'comma separated usernames for reviews'
+    default: ''
+  count:
+    description: 'how many reviews needed'
+    default: 1
 runs:
-  using: 'node16'
+  using: 'node14'
   main: 'dist/index.js'
