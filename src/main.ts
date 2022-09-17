@@ -40,6 +40,7 @@ async function run(): Promise<void> {
       .filter(Boolean)
     if (reviews.length < count) core.setFailed('Mandatory review check failed')
   } catch (error) {
+    console.log(error)
     if (error instanceof Error) core.setFailed(error.message)
   }
 }

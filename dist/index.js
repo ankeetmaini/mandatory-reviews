@@ -76,6 +76,7 @@ function run() {
                 core.setFailed('Mandatory review check failed');
         }
         catch (error) {
+            console.log(error);
             if (error instanceof Error)
                 core.setFailed(error.message);
         }
