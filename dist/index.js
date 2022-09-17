@@ -50,22 +50,18 @@ function run() {
             const count = Number(core.getInput('count'));
             const octokit = new core_1.Octokit();
             const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-            console.log(owner, repo);
             const pull_number = github.context.issue.number;
-            console.log({ pull_number });
             const res = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews', {
                 owner,
                 repo,
                 pull_number,
                 per_page: 100
             });
-            console.log(res);
             const reviews = res.data
                 .map(d => {
                 var _a;
                 const login = (_a = d === null || d === void 0 ? void 0 : d.user) === null || _a === void 0 ? void 0 : _a.login;
                 const state = d === null || d === void 0 ? void 0 : d.state;
-                console.log({ login, state });
                 if (login && group.includes(login) && state === 'APPROVED') {
                     return login;
                 }

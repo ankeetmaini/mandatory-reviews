@@ -14,9 +14,7 @@ async function run(): Promise<void> {
 
     const octokit = new Octokit()
     const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/')
-    console.log(owner, repo)
     const pull_number = github.context.issue.number
-    console.log({pull_number})
     const res: reviewsResponse = await octokit.request(
       'GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews',
       {
@@ -26,12 +24,11 @@ async function run(): Promise<void> {
         per_page: 100
       }
     )
-    console.log(res)
     const reviews = res.data
       .map(d => {
         const login = d?.user?.login
         const state = d?.state
-        console.log({login, state})
+
         if (login && group.includes(login) && state === 'APPROVED') {
           return login
         }
