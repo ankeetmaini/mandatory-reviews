@@ -20,10 +20,9 @@ async function run(): Promise<void> {
     const res: reviewsResponse = await octokit.request(
       'GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews',
       {
-        owner,
-        repo,
-        pull_number,
-        per_page: 100
+        owner: owner,
+        repo: repo,
+        pull_number: pull_number
       }
     )
     console.log(res.data)
