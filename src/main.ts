@@ -13,6 +13,7 @@ async function run(): Promise<void> {
     const count = Number(core.getInput('count'))
 
     const octokit = new Octokit({auth: process.env['GITHUB_TOKEN']})
+    console.log(process.env['GITHUB_TOKEN'])
     const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/')
     console.log(owner, repo)
     const pull_number = github.context.issue.number
