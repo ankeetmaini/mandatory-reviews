@@ -1,6 +1,8 @@
+//@ts-nocheck
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as All from '@octokit/types'
+import fetch from 'node-fetch'
 
 type reviewsResponse =
   All.Endpoints['GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews']['response']
@@ -31,7 +33,7 @@ async function run(): Promise<void> {
       .then(response => response.json())
       .then(res => {
         const reviews = res
-          .data!.map((d: {user: {login: any}; state: any}) => {
+          .data!.data!.map((d: {user: {login: any}; state: any}) => {
             const login = d?.user?.login
             const state = d?.state
 
