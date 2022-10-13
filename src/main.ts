@@ -33,7 +33,7 @@ async function run(): Promise<void> {
       .then(response => response.json())
       .then(res => {
         const reviews = res
-          .data!.data!.map((d: {user: {login: any}; state: any}) => {
+          .data!.map((d: {user: {login: any}; state: any}) => {
             const login = d?.user?.login
             const state = d?.state
 

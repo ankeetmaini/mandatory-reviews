@@ -75,7 +75,7 @@ function run() {
             (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`, requestOptions)
                 .then(response => response.json())
                 .then(res => {
-                const reviews = res.data
+                const reviews = res
                     .data.map((d) => {
                     var _a;
                     const login = (_a = d === null || d === void 0 ? void 0 : d.user) === null || _a === void 0 ? void 0 : _a.login;
