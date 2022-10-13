@@ -77,7 +77,7 @@ function run() {
                 .then(res => {
                 console.log(res);
                 const reviews = res
-                    .data.map((d) => {
+                    .map((d) => {
                     var _a;
                     const login = (_a = d === null || d === void 0 ? void 0 : d.user) === null || _a === void 0 ? void 0 : _a.login;
                     const state = d === null || d === void 0 ? void 0 : d.state;
@@ -90,7 +90,7 @@ function run() {
                 if (reviews.length < count)
                     core.setFailed('Mandatory review check failed');
             })
-                .catch(error => console.log('error', error));
+                .catch(error => core.setFailed(error.message));
         }
         catch (error) {
             if (error instanceof Error)

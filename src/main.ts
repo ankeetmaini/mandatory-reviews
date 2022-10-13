@@ -34,7 +34,7 @@ async function run(): Promise<void> {
       .then(res => {
         console.log(res)
         const reviews = res
-          .data!.map((d: {user: {login: any}; state: any}) => {
+          .map((d: {user: {login: any}; state: any}) => {
             const login = d?.user?.login
             const state = d?.state
 
@@ -47,7 +47,7 @@ async function run(): Promise<void> {
         if (reviews.length < count)
           core.setFailed('Mandatory review check failed')
       })
-      .catch(error => console.log('error', error))
+      .catch(error => core.setFailed(error.message))
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
