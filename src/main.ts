@@ -21,7 +21,7 @@ async function run(): Promise<void> {
       method: 'GET',
       headers: {
         Authorization: process.env['GITHUB_TOKEN'] as string,
-        Accept: 'application/vnd.github.v3+json'
+        Accept: 'application/json'
       },
       redirect: 'follow'
     }
@@ -32,6 +32,7 @@ async function run(): Promise<void> {
     )
       .then(response => response.json())
       .then(res => {
+        console.log(res)
         const reviews = res
           .data!.map((d: {user: {login: any}; state: any}) => {
             const login = d?.user?.login

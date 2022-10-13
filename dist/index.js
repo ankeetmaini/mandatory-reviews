@@ -68,13 +68,14 @@ function run() {
                 method: 'GET',
                 headers: {
                     Authorization: process.env['GITHUB_TOKEN'],
-                    Accept: 'application/vnd.github.v3+json'
+                    Accept: 'application/json'
                 },
                 redirect: 'follow'
             };
             (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`, requestOptions)
                 .then(response => response.json())
                 .then(res => {
+                console.log(res);
                 const reviews = res
                     .data.map((d) => {
                     var _a;
