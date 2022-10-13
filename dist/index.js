@@ -61,9 +61,7 @@ function run() {
             const group = usernames.split(',');
             const count = Number(core.getInput('count'));
             const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-            console.log(owner, repo);
             const pull_number = github.context.issue.number;
-            console.log(pull_number);
             var requestOptions = {
                 method: 'GET',
                 headers: {
@@ -75,7 +73,6 @@ function run() {
             (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`, requestOptions)
                 .then(response => response.json())
                 .then(res => {
-                console.log(res);
                 const reviews = res
                     .map((d) => {
                     var _a;
