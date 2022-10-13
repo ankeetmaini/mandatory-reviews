@@ -51,12 +51,12 @@ function run() {
             console.log(owner, repo);
             const pull_number = github.context.issue.number;
             console.log(pull_number);
-            var myHeaders = new Headers();
-            myHeaders.append("Accept", "application/vnd.github.v3+json");
-            myHeaders.append("Authorization", process.env['GITHUB_TOKEN']);
             var requestOptions = {
                 method: 'GET',
-                headers: myHeaders,
+                headers: {
+                    Authorization: process.env['GITHUB_TOKEN'],
+                    Accept: "application/vnd.github.v3+json"
+                },
                 redirect: 'follow'
             };
             fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`, requestOptions)
