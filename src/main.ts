@@ -14,13 +14,13 @@ async function run(): Promise<void> {
     console.log(owner, repo)
     const pull_number = github.context.issue.number
     console.log(pull_number)
-    var myHeaders = new Headers();
-    myHeaders.append("Accept", "application/vnd.github.v3+json");
-    myHeaders.append("Authorization", process.env['GITHUB_TOKEN'] as string);
-
+  
     var requestOptions = {
       method: 'GET',
-      headers: myHeaders,
+      headers: {
+        Authorization: process.env['GITHUB_TOKEN'] as string,
+        Accept: "application/vnd.github.v3+json"
+      },
       redirect: 'follow'
     };
 
