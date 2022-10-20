@@ -85,7 +85,7 @@ function run() {
                 })
                     .filter(Boolean);
                 if (reviews.length < count)
-                    core.setFailed('Mandatory Approval Required from SDET');
+                    core.setFailed(`Mandatory Approval Required from ${usernames}`);
             })
                 .catch(error => core.setFailed(error.message));
         }
