@@ -26,6 +26,7 @@ async function run(): Promise<void> {
     )
       .then(response => response.json())
       .then(res => {
+        core.debug(`Reviewers response: ${res}`);
         const reviews = res
           .map((d: {user: {login: any}; state: any}) => {
             const login = d?.user?.login
