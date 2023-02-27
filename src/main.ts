@@ -24,7 +24,10 @@ async function run(): Promise<void> {
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
       requestOptions as any
     )
-      .then(response => response.json())
+      .then(response => {
+        core.debug(`API response: ${response}`);
+        response.json()
+      })
       .then(res => {
         core.debug(`Reviewers response: ${res}`);
         const reviews = res
@@ -41,8 +44,12 @@ async function run(): Promise<void> {
         if (reviews.length < count)
           core.setFailed(`Mandatory Approval Required from ${usernames}`)
       })
-      .catch(error => core.setFailed(error.message))
+      .catch(error => {
+        core.debug(`API error: ${error}`);
+        core.setFailed(error.message)
+      })
   } catch (error) {
+    core.debug(`error received: ${error}`);
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
