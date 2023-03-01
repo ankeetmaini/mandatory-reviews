@@ -19,17 +19,18 @@ async function run(): Promise<void> {
       },
       redirect: 'follow'
     }
-
+    console.log({owner,repo,pull_number})
     fetch(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
       requestOptions as any
     )
       .then(response => {
-        core.debug(`API response: ${response}`);
-        response.json()
+        console.log({response})
+        return response.json()
       })
       .then(res => {
         core.debug(`Reviewers response: ${res}`);
+        console.log({res})
         const reviews = res
           .map((d: {user: {login: any}; state: any}) => {
             const login = d?.user?.login
@@ -41,15 +42,16 @@ async function run(): Promise<void> {
             return
           })
           .filter(Boolean)
+          console.log({reviews})
         if (reviews.length < count)
           core.setFailed(`Mandatory Approval Required from ${usernames}`)
       })
       .catch(error => {
-        core.debug(`API error: ${error}`);
+        console.log({error})
         core.setFailed(error.message)
       })
   } catch (error) {
-    core.debug(`error received: ${error}`);
+    console.log({error})
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
