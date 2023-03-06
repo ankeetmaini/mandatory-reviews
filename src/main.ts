@@ -2,7 +2,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import fetch from 'node-fetch'
-
 async function run(): Promise<void> {
   try {
     const usernames: string = core.getInput('usernames')
@@ -10,7 +9,6 @@ async function run(): Promise<void> {
     const count = Number(core.getInput('count'))
     const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/')
     const pull_number = github.context.issue.number
-
     var requestOptions = {
       method: 'GET',
       headers: {
@@ -19,41 +17,28 @@ async function run(): Promise<void> {
       },
       redirect: 'follow'
     }
-    console.log({owner,repo,pull_number})
     fetch(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
-      requestOptions as any
+        `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`,
+        requestOptions as any
     )
-      .then(response => {
-        console.log({response})
-        return response.json()
-      })
-      .then(res => {
-        core.debug(`Reviewers response: ${res}`);
-        console.log({res})
-        const reviews = res
-          .map((d: {user: {login: any}; state: any}) => {
-            const login = d?.user?.login
-            const state = d?.state
-
-            if (login && group.includes(login) && state === 'APPROVED') {
-              return login
-            }
-            return
-          })
-          .filter(Boolean)
-          console.log({reviews})
-        if (reviews.length < count)
-          core.setFailed(`Mandatory Approval Required from ${usernames}`)
-      })
-      .catch(error => {
-        console.log({error})
-        core.setFailed(error.message)
-      })
+        .then(response => response.json())
+        .then(res => {
+          const reviews = res
+              .map((d: {user: {login: any}; state: any}) => {
+                const login = d?.user?.login
+                const state = d?.state
+                if (login && group.includes(login) && state === 'APPROVED') {
+                  return login
+                }
+                return
+              })
+              .filter(Boolean)
+          if (reviews.length < count)
+            core.setFailed(`Mandatory Approval Required from ${usernames}`)
+        })
+        .catch(error => core.setFailed(error.message))
   } catch (error) {
-    console.log({error})
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
-
 run()
