@@ -70,7 +70,7 @@ function run() {
                 },
                 redirect: 'follow'
             };
-            (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`, requestOptions)
+            (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`, requestOptions)
                 .then((response) => __awaiter(this, void 0, void 0, function* () { return response.json(); }))
                 .then(res => {
                 core.debug(`Reviewers response: ${res}`);
