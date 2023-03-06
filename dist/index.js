@@ -73,6 +73,7 @@ function run() {
             (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`, requestOptions)
                 .then((response) => __awaiter(this, void 0, void 0, function* () { return response.json(); }))
                 .then(res => {
+                core.debug(`Reviewers response: ${res}`);
                 const reviews = res
                     .map((d) => {
                     var _a;
