@@ -21,7 +21,7 @@ async function run(): Promise<void> {
     }
     console.log({owner,repo,pull_number})
     fetch(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
+      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`,
       requestOptions as any
     )
       .then(response => {
