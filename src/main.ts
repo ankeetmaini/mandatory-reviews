@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const count = Number(core.getInput('count'))
     const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/')
     const pull_number = github.context.issue.number
-    const requestOptions = {
+    var requestOptions = {
       method: 'GET',
       headers: {
         Authorization: process.env['GITHUB_TOKEN'] as string,
@@ -17,10 +17,9 @@ async function run(): Promise<void> {
       },
       redirect: 'follow'
     }
-    console.log({owner, repo, pull_number})
     fetch(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
-      requestOptions as any
+        `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`,
+        requestOptions as any
     )
       .then(async response => response.json())
       .then(res => {
