@@ -18,8 +18,8 @@ async function run(): Promise<void> {
       redirect: 'follow'
     }
     fetch(
-        `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`,
-        requestOptions as any
+      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
+      requestOptions as any
     )
       .then(async response => response.json())
       .then(res => {
