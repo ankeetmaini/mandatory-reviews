@@ -6,6 +6,10 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
+    
+      - uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '13.x'
       - uses: actions/checkout@v2
       - run: |
           npm install
