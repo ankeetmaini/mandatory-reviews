@@ -72,10 +72,6 @@ function run() {
             };
             console.log({ owner, repo, pull_number });
             (0, node_fetch_1.default)(`https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`, requestOptions)
-                .then(response => {
-                console.log({ response });
-                return response.json();
-            })
                 .then((response) => __awaiter(this, void 0, void 0, function* () { return response.json(); }))
                 .then(res => {
                 core.debug(`Reviewers response: ${res}`);
@@ -94,10 +90,6 @@ function run() {
                 console.log({ reviews });
                 if (reviews.length < count)
                     core.setFailed(`Mandatory Approval Required from ${usernames}`);
-            })
-                .catch(error => {
-                console.log({ error });
-                core.setFailed(error.message);
             })
                 .catch(error => core.setFailed(error.message));
         }
