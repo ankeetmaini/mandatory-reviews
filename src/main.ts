@@ -18,25 +18,28 @@ async function run(): Promise<void> {
       redirect: 'follow'
     }
     fetch(
-        `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews`,
-        requestOptions as any
+      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
+      requestOptions as any
     )
-        .then(response => response.json())
-        .then(res => {
-          const reviews = res
-              .map((d: {user: {login: any}; state: any}) => {
-                const login = d?.user?.login
-                const state = d?.state
-                if (login && group.includes(login) && state === 'APPROVED') {
-                  return login
-                }
-                return
-              })
-              .filter(Boolean)
-          if (reviews.length < count)
-            core.setFailed(`Mandatory Approval Required from ${usernames}`)
-        })
-        .catch(error => core.setFailed(error.message))
+      .then(async response => response.json())
+      .then(res => {
+        core.debug(`Reviewers response: ${res}`)
+        console.log({res})
+        const reviews = res
+          .map((d: {user: {login: any}; state: any}) => {
+            const login = d?.user?.login
+            const state = d?.state
+            if (login && group.includes(login) && state === 'APPROVED') {
+              return login
+            }
+            return
+          })
+          .filter(Boolean)
+        console.log({reviews})
+        if (reviews.length < count)
+          core.setFailed(`Mandatory Approval Required from ${usernames}`)
+      })
+      .catch(error => core.setFailed(error.message))
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
