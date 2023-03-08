@@ -1,44 +1,47 @@
+//@ts-nocheck
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {Octokit} from '@octokit/core'
-import * as All from '@octokit/types'
-
-type reviewsResponse =
-  All.Endpoints['GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews']['response']
-
+import fetch from 'node-fetch'
 async function run(): Promise<void> {
   try {
     const usernames: string = core.getInput('usernames')
     const group = usernames.split(',')
     const count = Number(core.getInput('count'))
-
-    const octokit = new Octokit()
     const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/')
     const pull_number = github.context.issue.number
-    const res: reviewsResponse = await octokit.request(
-      'GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews',
-      {
-        owner,
-        repo,
-        pull_number,
-        per_page: 100
-      }
+    var requestOptions = {
+      method: 'GET',
+      headers: {
+        Authorization: process.env['GITHUB_TOKEN'] as string,
+        Accept: 'application/json'
+      },
+      redirect: 'follow'
+    }
+    fetch(
+      `https://api.github.com/repos/${owner}/${repo}/pulls/${pull_number}/reviews?per_page=100`,
+      requestOptions as any
     )
-    const reviews = res.data
-      .map(d => {
-        const login = d?.user?.login
-        const state = d?.state
-
-        if (login && group.includes(login) && state === 'APPROVED') {
-          return login
-        }
-        return
+      .then(async response => response.json())
+      .then(res => {
+        core.debug(`Reviewers response: ${res}`)
+        console.log({res})
+        const reviews = res
+          .map((d: {user: {login: any}; state: any}) => {
+            const login = d?.user?.login
+            const state = d?.state
+            if (login && group.includes(login) && state === 'APPROVED') {
+              return login
+            }
+            return
+          })
+          .filter(Boolean)
+        console.log({reviews})
+        if (reviews.length < count)
+          core.setFailed(`Mandatory Approval Required from ${usernames}`)
       })
-      .filter(Boolean)
-    if (reviews.length < count) core.setFailed('Mandatory review check failed')
+      .catch(error => core.setFailed(error.message))
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
-
 run()
